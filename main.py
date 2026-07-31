@@ -470,16 +470,18 @@ async def _sched_run_loop(sched_id, user_id, db):
             schedule = await db.db.schedules.find_one({"_id": ObjectId(sched_id)})
             if not schedule or not schedule.get("is_active"):
                 break
+            
             accounts = await db.get_accounts(user_id)
             message = schedule["message"]
-            groups_filter = schedule.get("groups", "all")
             interval = schedule.get("interval", 300)
             settings = await db.get_settings(user_id)
             wait_time = settings.get("wait_time", 20)
+            
             for acc in accounts:
                 if acc.get("status") == "dead":
                     continue
                 cd = acc.get("cooldown_until")
                 if cd and datetime.utcnow() < cd:
                     continue
-                # Note: Filtering
+                
+                # Execute the sche
