@@ -31,14 +31,14 @@ log = logging.getLogger("FaahAdsBot")
 # CONFIG
 # ════════════════════════════════════════════════════════════════
 BOT_TOKEN   = os.environ.get("TELEGRAM_BOT_TOKEN", "")
-BOT_NAME    = "Faah Ads Bot"
+BOT_NAME    = "Faah Fuck Ads Bot"
 BOT_VERSION = "2.0"
-OWNER_ID    = 7929802589
+OWNER_ID    = 6864535438
 MAX_ACCOUNTS = 500
 API_ID      = int(os.environ.get("TELETHON_API_ID", "0"))
 API_HASH    = os.environ.get("TELETHON_API_HASH", "")
 MONGODB_URL = os.environ.get("MONGODB_URL", "")
-DB_NAME     = "faah_ads_bot"
+DB_NAME     = "faah_fuck_ads_bot"
 
 # ════════════════════════════════════════════════════════════════
 # STATES
