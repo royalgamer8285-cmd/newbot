@@ -484,4 +484,79 @@ async def _sched_run_loop(sched_id, user_id, db):
                 if cd and datetime.utcnow() < cd:
                     continue
                 
-                # Execute the sche
+                # Execute the scheduled ad
+                s, f = await send_message_to_groups(
+                    acc["session_string"], message, wait_time, db, user_id, acc["phone"]
+                )
+                
+            # Sleep until the next interval
+            await asyncio.sleep(interval)
+            
+    except asyncio.CancelledError:
+        pass
+    except Exception as e:
+        print(f"[SchedEngine] Error user {user_id}: {e}")
+
+# ════════════════════════════════════════════════════════════════
+# KEEP-ALIVE SERVER (The "Jaadu")
+# ════════════════════════════════════════════════════════════════
+from flask import Flask
+from threading import Thread
+
+app = Flask("")
+
+@app.route('/')
+def home():
+    return "Faah Ads Bot is alive and running 24/7!"
+
+def run():
+    # Render assigns a port dynamically via the PORT env var. 
+    # Fallback to 8080 if not running on Render.
+    port = int(os.environ.get("PORT", 8080))
+    app.run(host='0.0.0.0', port=port)
+
+def keep_alive():
+    t = Thread(target=run)
+    t.start()
+
+# ════════════════════════════════════════════════════════════════
+# MAIN ENTRY POINT
+# ════════════════════════════════════════════════════════════════
+async def main():
+    # 1. Initialize Database
+    db = Database()
+    await db.connect()
+    
+    # Ensure owner is set as admin
+    await db.set_admin(OWNER_ID, True)
+    
+    # 2. Build the Bot Application
+    application = Application.builder().token(BOT_TOKEN).build()
+    
+    # (If you have specific command handlers, ensure they are registered here)
+    # e.g., application.add_handler(CommandHandler("start", start_handler))
+
+    # 3. Restore any active background tasks
+    await ad_restore(db, application.bot)
+
+    log.info(f"✅ {BOT_NAME} v{BOT_VERSION} is starting...")
+    
+    # 4. Start polling
+    await application.initialize()
+    await application.start()
+    await application.updater.start_polling(allowed_updates=Update.ALL_TYPES)
+    
+    # Keep the application running
+    stop_signal = asyncio.Event()
+    await stop_signal.wait()
+
+if __name__ == "__main__":
+    # 1. Start the Flask web server in a background thread FIRST
+    print("🪄 Starting the Keep-Alive server...")
+    keep_alive()
+    
+    # 2. Start the Telegram bot
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        print("\nBot stopped by user.")
