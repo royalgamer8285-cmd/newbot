@@ -4,3 +4,4 @@ motor>=3.3.0
 cryptg0
 cryptg
 pytz
+flask
