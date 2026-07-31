@@ -1,5 +1,5 @@
 """
-Faah Ads Bot — Single-file deployment build.
+Faah Fuck Ads Bot — Single-file deployment build.
 All modules merged: config, states, database, session_mgr,
 ad_engine, scheduler_engine, all handlers, and main entry point.
 """
@@ -482,4 +482,4 @@ async def _sched_run_loop(sched_id, user_id, db):
                 cd = acc.get("cooldown_until")
                 if cd and datetime.utcnow() < cd:
                     continue
-                if groups_filter =
+                # Note: Filtering
